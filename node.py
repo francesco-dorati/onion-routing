@@ -22,6 +22,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
   s.listen()
   conn, addr = s.accept()
 
+  s.listen()
+  conn, addr = s.accept()
+
   external_public_key = int.from_bytes(conn.recv(1024), 'big')
   conn.sendall(public_key.to_bytes(1024, 'big'))
 
@@ -50,7 +53,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
   message = json.loads(Fernet(key).decrypt(encrypted_massage).decode())
 
-  address, port = message['to'].split(':')
+  address, port = message['address'].split(':')
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
   s.connect((address, int(port)))
