@@ -18,18 +18,13 @@ class Client:
       nodes = []
       for line in file:
         address, port = line.strip().split(':')
-        nodes.append((address, int(port)))
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+          try:
+            node = (address, int(port))
+            nodes.append(node)
+          except ConnectionRefusedError:
+            pass
 
-    # check nodes
-    for node in nodes:
-      with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        try:
-          s.connect(node)
-        except ConnectionRefusedError:
-          nodes.remove(node)
-
-    # wait for sockets to go up
-    # 2 online nodes, waiting for other 1
     # not enough nodes
     if len(nodes) < 3:
       print('Active nodes:')
